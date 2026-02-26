@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Prashant Nimbwat — Digital Resume</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for heading icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="" crossorigin="anonymous">
+    <link href="css/style.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <main class="container my-5">
+        <h1 class="mb-3">Typing Skill Assessment</h1>
+
+        <div class="row mb-3">
+            <div class="col-sm-6">
+                <div><strong>Clock:</strong> <span id="clock">--:--:--</span></div>
+                <div><strong>Timer:</strong> <span id="timer">00:00:00</span></div>
+            </div>
+        </div>
+
+        <div class="typing-area mb-3">
+            <textarea id="typingArea" placeholder="Start typing here..." aria-label="typing area"></textarea>
+        </div>
+    <div class="alert alert-danger" id="statusMsg" role="alert" style="display:none;"></div>
+
+        <div class="summary mb-3">
+            <h5>Summary</h5>
+            <div>Words Typed Per Second: <span id="wordsPerSec">0</span></div>
+            <div>Chars Typed Per Second: <span id="charsPerSec">0</span></div>
+            <div>Sentences Typed Per Minute: <span id="sentencesPerMin">0</span></div>
+        </div>
+
+
+        <div>
+            <button id="resetBtn" class="btn btn-outline-primary">RESET</button>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/main.js" defer></script>
+</body>
+
+</html>

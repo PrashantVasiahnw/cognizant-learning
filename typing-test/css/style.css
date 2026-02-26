@@ -1,0 +1,70 @@
+:root { --brand: #094d73;--brand-dark: #063650;--brand-light: #e1e9ed; --bs-border-radius-sm: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; color: #092c3a; }
+.typing-area textarea { width: 100%; min-height: 200px; padding: 1rem; font-size: 1rem; border: 2px solid var(--brand); border-radius: 0; resize: vertical; }
+.summary { background:var(--brand-light); padding: 1rem; }
+.summary h5 {margin-top:0}
+.btn {border-radius:0}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
