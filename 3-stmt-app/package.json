@@ -1,0 +1,13 @@
+{
+  "name": "statement-manager",
+  "version": "1.0.0",
+  "description": "A simple statement manager app using TypeScript and Bootstrap",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "clean": "rm -rf lib/*.js lib/*.js.map lib/*.d.ts lib/*.d.ts.map"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.0"
+  }
+}
