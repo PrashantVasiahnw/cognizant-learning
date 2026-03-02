@@ -1,5 +1,3 @@
-// Simple statement manager using localStorage. No frameworks.
-
 interface StatementRow {
   date: string;
   header: string;
@@ -254,7 +252,6 @@ function init(): void {
   setupMutualExclusive(creditInput, debitInput);
 }
 
-// Initialize the app when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
   init();
 });

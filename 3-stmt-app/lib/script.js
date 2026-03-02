@@ -1,5 +1,4 @@
 "use strict";
-// Simple statement manager using localStorage. No frameworks.
 const STORAGE_KEY = 'stmt_app_rows_v1';
 let rows = [];
 // DOM elements
@@ -221,7 +220,6 @@ function init() {
     setupEventListeners();
     setupMutualExclusive(creditInput, debitInput);
 }
-// Initialize the app when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     init();
 });
