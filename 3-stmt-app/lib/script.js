@@ -1,6 +1,5 @@
 "use strict";
 const API_BASE = 'http://localhost:5001';
-const STORAGE_KEY = 'stmt_app_rows_v1'; // kept but no longer used
 let rows = [];
 // DOM elements
 let dateInput;

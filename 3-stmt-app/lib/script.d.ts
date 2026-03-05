@@ -6,7 +6,6 @@ interface StatementRow {
     debit: number;
 }
 declare const API_BASE = "http://localhost:5001";
-declare const STORAGE_KEY = "stmt_app_rows_v1";
 declare let rows: StatementRow[];
 declare let dateInput: HTMLInputElement;
 declare let headerInput: HTMLInputElement;
