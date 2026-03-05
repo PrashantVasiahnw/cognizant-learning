@@ -1,5 +1,6 @@
 "use strict";
-const STORAGE_KEY = 'stmt_app_rows_v1';
+const API_BASE = 'http://localhost:5001';
+const STORAGE_KEY = 'stmt_app_rows_v1'; // kept but no longer used
 let rows = [];
 // DOM elements
 let dateInput;
@@ -29,17 +30,42 @@ function initDOM() {
     totalDebitEl = getElement('#totalDebit');
     balanceEl = getElement('#balance');
 }
-function load() {
+async function load() {
     try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        rows = raw ? JSON.parse(raw) : [];
+        const res = await fetch(`${API_BASE}/statements`);
+        if (!res.ok)
+            throw new Error('Failed to load');
+        rows = await res.json();
     }
     catch (e) {
+        console.error('Error loading statements', e);
         rows = [];
     }
 }
-function save() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(rows));
+async function createRow(data) {
+    const res = await fetch(`${API_BASE}/statements`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+    });
+    if (!res.ok)
+        throw new Error('Failed to create');
+}
+async function updateRow(id, data) {
+    const res = await fetch(`${API_BASE}/statements/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+    });
+    if (!res.ok)
+        throw new Error('Failed to update');
+}
+async function deleteRow(id) {
+    const res = await fetch(`${API_BASE}/statements/${id}`, {
+        method: 'DELETE',
+    });
+    if (!res.ok)
+        throw new Error('Failed to delete');
 }
 function formatNumber(n) {
     return Number(n).toLocaleString();
@@ -75,15 +101,19 @@ function render() {
     totalDebitEl.textContent = formatNumber(totalDebit);
     balanceEl.textContent = formatNumber(totalCredit - totalDebit);
 }
-function addRow() {
+async function addRow() {
     const cVal = creditInput.value ? Number(creditInput.value) : 0;
     const dVal = debitInput.value ? Number(debitInput.value) : 0;
     if (cVal > 0 && dVal > 0) {
         alert('Enter either Credit or Debit, not both.');
         return;
     }
+    if (cVal === 0 && dVal === 0) {
+        alert('Enter at least a Credit or a Debit amount.');
+        return;
+    }
     const data = {
-        date: dateInput.value,
+        date: dateInput.value || new Date().toISOString().slice(0, 10),
         header: headerInput.value.trim(),
         credit: cVal,
         debit: dVal,
@@ -92,13 +122,16 @@ function addRow() {
         alert('Header required');
         return;
     }
-    if (!data.date) {
-        data.date = new Date().toISOString().slice(0, 10);
+    try {
+        await createRow(data);
+        await load();
+        render();
+        clearInputs();
     }
-    rows.push(data);
-    save();
-    render();
-    clearInputs();
+    catch (e) {
+        console.error(e);
+        alert('Failed to add statement');
+    }
 }
 function clearInputs() {
     headerInput.value = '';
@@ -156,44 +189,68 @@ function setupMutualExclusive(creditEl, debitEl) {
     debitEl.addEventListener('input', update);
     update();
 }
-function saveEdit(idx) {
+async function saveEdit(idx) {
     const form = stmtRows.querySelector(`form[data-i="${idx}"]`);
     const dateField = form.querySelector('.date-field');
     const headerField = form.querySelector('.header-field');
     const creditField = form.querySelector('.credit-field');
     const debitField = form.querySelector('.debit-field');
-    const updated = {
+    const updatedPayload = {
         date: dateField.value,
         header: headerField.value.trim(),
         credit: creditField.value ? Number(creditField.value) : 0,
         debit: debitField.value ? Number(debitField.value) : 0,
     };
-    if (!updated.header) {
+    if (!updatedPayload.header) {
         alert('Header required');
         return;
     }
-    if (updated.credit > 0 && updated.debit > 0) {
+    if (updatedPayload.credit > 0 && updatedPayload.debit > 0) {
         alert('Enter either Credit or Debit, not both.');
         return;
     }
-    rows[idx] = updated;
-    save();
-    render();
+    if (updatedPayload.credit === 0 && updatedPayload.debit === 0) {
+        alert('Enter at least a Credit or a Debit amount.');
+        return;
+    }
+    const existing = rows[idx];
+    if (!existing || existing.id == null) {
+        alert('Cannot update this row');
+        return;
+    }
+    try {
+        await updateRow(existing.id, updatedPayload);
+        await load();
+        render();
+    }
+    catch (e) {
+        console.error(e);
+        alert('Failed to save changes');
+    }
 }
 function cancelEdit() {
     render();
 }
-function removeRow(idx) {
+async function removeRow(idx) {
     if (!confirm('Remove this entry?'))
         return;
-    rows.splice(idx, 1);
-    save();
-    render();
+    const existing = rows[idx];
+    if (!existing || existing.id == null) {
+        alert('Cannot delete this row');
+        return;
+    }
+    try {
+        await deleteRow(existing.id);
+        await load();
+        render();
+    }
+    catch (e) {
+        console.error(e);
+        alert('Failed to remove');
+    }
 }
 function setupEventListeners() {
-    // Add button click
     addBtn.addEventListener('click', () => addRow());
-    // Event delegation for statement rows
     stmtRows.addEventListener('click', (e) => {
         const btn = e.target.closest('button');
         if (!btn)
@@ -213,9 +270,9 @@ function setupEventListeners() {
         }
     });
 }
-function init() {
+async function init() {
     initDOM();
-    load();
+    await load();
     render();
     setupEventListeners();
     setupMutualExclusive(creditInput, debitInput);
