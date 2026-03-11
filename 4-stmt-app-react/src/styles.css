@@ -1,0 +1,85 @@
+/* Minimal custom CSS - most styling uses Bootstrap utilities */
+
+/* Statement rows styling */
+#stmtRows {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+  border-left: 1px solid #dee2e6;
+  border-right: 1px solid #dee2e6;
+  border-bottom: 1px solid #dee2e6;
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+}
+
+.stmt-row {
+  padding: 0 12px;
+  border-bottom: 1px solid #dee2e6;
+  background: #fff;
+}
+
+.stmt-row:last-child {
+  border-bottom: none;
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+}
+
+.stmt-row input[readonly] {
+  background: transparent;
+  border: none;
+  padding: 8px 0;
+  color: inherit;
+}
+
+.stmt-row .row-number {
+  font-weight: 600;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+}
+
+.stmt-row .actions {
+  display: flex;
+  gap: 6px;
+  justify-content: flex-end;
+}
+
+/* Validation error styles */
+.form-control.is-invalid {
+  border-color: #dc3545;
+  background-color: #fff5f5;
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+.form-control.is-invalid:focus {
+  border-color: #dc3545;
+  box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.35);
+}
+
+/* Add cursor hint for error tooltip */
+.form-control.is-invalid[title]:not([title=""]) {
+  cursor: help;
+  position: relative;
+}
+
+/* Pulse animation for invalid fields */
+@keyframes error-pulse {
+  0% { box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25); }
+  50% { box-shadow: 0 0 0 0.3rem rgba(220, 53, 69, 0.4); }
+  100% { box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25); }
+}
+
+.form-control.is-invalid {
+  animation: error-pulse 2s ease-in-out infinite;
+}
+
+.form-control.is-invalid:focus {
+  animation: none;
+}
+
+/* Disabled input styling */
+.form-control:disabled {
+  background-color: #e9ecef;
+  opacity: 0.65;
+  cursor: not-allowed;
+}

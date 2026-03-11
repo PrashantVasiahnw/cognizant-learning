@@ -3,7 +3,7 @@
     {
       "date": "2026-01-10",
       "header": "salary",
-      "credit": 120000,
+      "credit": 120050,
       "debit": 0,
       "id": 1
     },
@@ -11,7 +11,7 @@
       "date": "2026-01-14",
       "header": "rent",
       "credit": 0,
-      "debit": 25000,
+      "debit": 21900,
       "id": 2
     },
     {
@@ -20,6 +20,20 @@
       "credit": 0,
       "debit": 13000,
       "id": 3
+    },
+    {
+      "date": "2026-01-01",
+      "header": "test",
+      "credit": 0,
+      "debit": 14000,
+      "id": 4
+    },
+    {
+      "date": "2026-01-01",
+      "header": "asas",
+      "credit": 0,
+      "debit": 20000,
+      "id": 5
     }
   ]
 }
