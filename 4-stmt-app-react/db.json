@@ -34,6 +34,20 @@
       "credit": 0,
       "debit": 20000,
       "id": 5
+    },
+    {
+      "date": "2026-03-11",
+      "header": "asas",
+      "credit": 120000,
+      "debit": 0,
+      "id": 6
+    },
+    {
+      "date": "2026-01-01",
+      "header": "asas",
+      "credit": 0,
+      "debit": 15000,
+      "id": 7
     }
   ]
 }

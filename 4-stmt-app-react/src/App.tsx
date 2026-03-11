@@ -1,31 +1,27 @@
-import { useState, useEffect, useCallback } from 'react';
-import { StatementRow, StatementPayload } from './types';
-import { fetchStatements, createStatement, updateStatement, deleteStatement } from './api';
+import { useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from './store/hooks';
+import {
+  fetchStatementsThunk,
+  addStatementThunk,
+  updateStatementThunk,
+  deleteStatementThunk,
+  setEditingIndex,
+} from './store/statementsSlice';
+import { StatementPayload } from './types';
 import StatementForm from './components/StatementForm';
 import StatementList from './components/StatementList';
 
 function App() {
-  const [rows, setRows] = useState<StatementRow[]>([]);
-  const [editingIndex, setEditingIndex] = useState<number | null>(null);
-
-  const loadData = useCallback(async () => {
-    try {
-      const data = await fetchStatements();
-      setRows(data);
-    } catch (e) {
-      console.error('Error loading statements', e);
-      setRows([]);
-    }
-  }, []);
+  const dispatch = useAppDispatch();
+  const { rows, editingIndex, loading, error } = useAppSelector((state) => state.statements);
 
   useEffect(() => {
-    loadData();
-  }, [loadData]);
+    dispatch(fetchStatementsThunk());
+  }, [dispatch]);
 
   const handleAdd = async (data: StatementPayload): Promise<boolean> => {
     try {
-      await createStatement(data);
-      await loadData();
+      await dispatch(addStatementThunk(data)).unwrap();
       return true;
     } catch (e) {
       console.error(e);
@@ -35,7 +31,7 @@ function App() {
   };
 
   const handleEdit = (index: number) => {
-    setEditingIndex(index);
+    dispatch(setEditingIndex(index));
   };
 
   const handleSave = async (index: number, data: StatementPayload): Promise<boolean> => {
@@ -46,9 +42,7 @@ function App() {
     }
 
     try {
-      await updateStatement(existing.id, data);
-      await loadData();
-      setEditingIndex(null);
+      await dispatch(updateStatementThunk({ id: existing.id, data })).unwrap();
       return true;
     } catch (e) {
       console.error(e);
@@ -58,7 +52,7 @@ function App() {
   };
 
   const handleCancel = () => {
-    setEditingIndex(null);
+    dispatch(setEditingIndex(null));
   };
 
   const handleDelete = async (index: number) => {
@@ -71,16 +65,15 @@ function App() {
     }
 
     try {
-      await deleteStatement(existing.id);
-      await loadData();
+      await dispatch(deleteStatementThunk(existing.id)).unwrap();
     } catch (e) {
       console.error(e);
       alert('Failed to remove');
     }
   };
 
-  const totalCredit = rows.reduce((sum: number, r: StatementRow) => sum + (r.credit || 0), 0);
-  const totalDebit = rows.reduce((sum: number, r: StatementRow) => sum + (r.debit || 0), 0);
+  const totalCredit = rows.reduce((sum, r) => sum + (r.credit || 0), 0);
+  const totalDebit = rows.reduce((sum, r) => sum + (r.debit || 0), 0);
   const balance = totalCredit - totalDebit;
 
   const formatNumber = (n: number): string => {
@@ -92,6 +85,13 @@ function App() {
       <div className="card shadow-sm">
         <div className="card-body">
           <h1 className="mb-4">Statement Manager</h1>
+          
+          {error && (
+            <div className="alert alert-danger alert-dismissible" role="alert">
+              {error}
+            </div>
+          )}
+          
           <section>
             <StatementForm onAdd={handleAdd} />
 
@@ -104,14 +104,18 @@ function App() {
               <div className="col-md-2">Actions</div>
             </div>
 
-            <StatementList
-              rows={rows}
-              editingIndex={editingIndex}
-              onEdit={handleEdit}
-              onSave={handleSave}
-              onCancel={handleCancel}
-              onDelete={handleDelete}
-            />
+            {loading && rows.length === 0 ? (
+              <div className="p-4 text-center text-muted">Loading...</div>
+            ) : (
+              <StatementList
+                rows={rows}
+                editingIndex={editingIndex}
+                onEdit={handleEdit}
+                onSave={handleSave}
+                onCancel={handleCancel}
+                onDelete={handleDelete}
+              />
+            )}
 
             <div className="mt-4 pt-3 border-top">
               <div className="row g-2 mb-3 p-3 bg-light rounded">
